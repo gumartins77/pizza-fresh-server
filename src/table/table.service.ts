@@ -3,6 +3,7 @@ import {
   HttpException,
   Injectable,
   NotFoundException,
+  UnprocessableEntityException,
 } from '@nestjs/common';
 import { table } from 'console';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -22,7 +23,7 @@ export class TableService {
     const record = await this.prisma.table.findUnique({ where: { id } });
 
     if (!record) {
-      throw new NotFoundException(`Record with Id '${id}' not found.`);
+      throw new NotFoundException(`Record with Id '${id}' not found!`);
     }
 
     return record;
@@ -35,7 +36,7 @@ export class TableService {
   create(dto: CreateTableDto): Promise<Table> {
     const data: Table = { ...dto };
 
-    return this.prisma.table.create({ data });
+    return this.prisma.table.create({ data }).catch(this.handleError);
   }
 
   async update(id: string, dto: UpdateTableDto): Promise<Table> {
@@ -43,10 +44,12 @@ export class TableService {
 
     const data: Partial<Table> = { ...dto };
 
-    return this.prisma.table.update({
-      where: { id },
-      data,
-    });
+    return this.prisma.table
+      .update({
+        where: { id },
+        data,
+      })
+      .catch(this.handleError);
   }
 
   async delete(id: string) {
@@ -54,5 +57,13 @@ export class TableService {
 
     await this.prisma.table.delete({ where: { id } });
     throw new HttpException('', 204);
+  }
+
+  handleError(error: Error): undefined {
+    const errorLines = error.message?.split('\n');
+    const lastErrorLine = errorLines[errorLines.length - 1]?.trim();
+    throw new UnprocessableEntityException(
+      lastErrorLine || 'An error occurred while performing the operation!',
+    );
   }
 }
