@@ -1,4 +1,9 @@
-import { Body, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Body,
+  HttpException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { table } from 'console';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateTableDto } from './dto/create-table.dto';
@@ -45,6 +50,9 @@ export class TableService {
   }
 
   async delete(id: string) {
+    await this.findById(id);
+
     await this.prisma.table.delete({ where: { id } });
+    throw new HttpException('', 204);
   }
 }

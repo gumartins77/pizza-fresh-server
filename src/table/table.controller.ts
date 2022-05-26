@@ -53,7 +53,6 @@ export class TableController {
   }
 
   @Delete(':id')
-  @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({
     summary: 'Remove a table by Id',
   })
