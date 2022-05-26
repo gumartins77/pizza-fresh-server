@@ -30,7 +30,7 @@ export class TableController {
 
   @Get(':id')
   @ApiOperation({
-    summary: 'View a table',
+    summary: 'View a table by Id',
   })
   findOne(@Param('id') id: string): Promise<Table> {
     return this.tableService.findOne(id);
@@ -53,6 +53,7 @@ export class TableController {
   }
 
   @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({
     summary: 'Remove a table by Id',
   })
