@@ -5,7 +5,7 @@ export class CreateProductDto {
   @IsString()
   @ApiProperty({
     description: 'The product name.',
-    example: 'Mozzarella Pizza.',
+    example: 'Mozzarella Pizza',
   })
   name: string;
   @IsNumber({
